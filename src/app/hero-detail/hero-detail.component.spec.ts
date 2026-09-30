@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -37,4 +37,16 @@ describe("HeroDetailComponent", () => {
 
     expect(fixture.nativeElement.querySelector("h2").textContent).toContain("SUPERDUDE");
   })
+
+  it("should call updateHero when save is called", fakeAsync(() => {
+    mockHeroService.getHero.and.returnValue(of({ id: 3, name: "SuperDude", strength: 100 }));
+    mockHeroService.updateHero.and.returnValue(of({}));
+    const fixture = TestBed.createComponent(HeroDetailComponent);
+    fixture.detectChanges();
+
+    fixture.componentInstance.save();
+    tick(250);
+
+    expect(mockHeroService.updateHero).toHaveBeenCalled();
+  }))
 })
